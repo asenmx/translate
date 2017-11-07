@@ -16,26 +16,41 @@ class Language
     }
 }
 
-if (!isset($_GET['id'])) {
-    $_GET['id'] = 1;
-    $_GET['tabid'] = 1;
+var_dump($_POST);
+
+if (!isset($_POST['id'])) {
+    $_POST['id'] = 1;
+    $_POST['tabid'] = 1;
+
 }
 ?>
 
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Page Title</title>
     <script src="jquery-3.2.1.min.js"></script>
     <script>
-        var tabs = "";
-
-        function selectedTab(tab) {
-            tabs = tab;
-        };
 
         function pickLang(str) {
-            window.location.href = "Language.php?id=" + str + '&tabid=' + tabs;
+            var childSelected = 1;
+            $("div[class=tab]").children('button').each(function () {
+                var myClasses = this.classList;
+                var child = 1;
+                child = this.value;
+                $.each(myClasses, function () {
+                    if (this == 'active') {
+                        childSelected = child;
+                    }
+                });
+
+            });
+
+            var input = $("<input>")
+                .attr("type", "hidden")
+                .attr("name", "tabid").val(childSelected);
+            $('#language-picker').append($(input));
+            $("#language-picker").submit();
         };
 
         function getContent(evt, tabName) {
@@ -99,29 +114,32 @@ if (!isset($_GET['id'])) {
     </style>
 </head>
 <body>
+
 <div>
-    <select name="users" onchange="pickLang(this.value)">
-        <option value="1" <?php if ($_GET['id'] == 1) { ?> selected <?php } ?>>EN</option>
-        <option value="2" <?php if ($_GET['id'] == 2) { ?> selected <?php } ?>>BG</option>
-    </select>
+    <form id="language-picker" action="Language.php" method="post">
+        <select name="id" onchange="pickLang(this.value)">
+            <option value="1" <?php if ($_POST['id'] == 1) { ?> selected <?php } ?>>EN</option>
+            <option value="2" <?php if ($_POST['id'] == 2) { ?> selected <?php } ?>>BG</option>
+        </select>
+    </form>
 </div>
 <div class="tab">
-    <button class="tablinks"
+    <button class="tablinks <?php if ($_POST['tabid'] == '1') { ?> active <?php } ?>""
             value="1"
-            onclick="getContent(event, 'Yaga');selectedTab(this.value)"><?php echo Language::languagePicker($_GET['id'])['YagaTitle']; ?><?php
-        ?></button>
-    <button class="tablinks"
+            onclick="getContent(event, 'Yaga');"><?php echo Language::languagePicker($_POST['id'])['YagaTitle']; ?></button>
+    <button class="tablinks <?php if ($_POST['tabid'] == '2') { ?> active <?php } ?>""
             value="2"
-            onclick="getContent(event, 'Father');selectedTab(this.value)"><?php echo Language::languagePicker($_GET['id'])['FatherTitle']; ?></button>
+            onclick="getContent(event, 'Father');"><?php echo Language::languagePicker($_POST['id'])['FatherTitle']; ?></button>
 </div>
-<div id="Yaga" class="tabcontent <?php if ($_GET['tabid'] == 1) { ?> active <?php } ?> value=" 1>
-    <h3><?php echo Language::languagePicker($_GET['id'])['YagaTitle']; ?></h3>
-    <p><?php echo Language::languagePicker($_GET['id'])['YagaText']; ?></p>
+
+
+<div id="Yaga" class="tabcontent <?php if ($_POST['tabid'] == '1') { ?> active <?php } ?>" value="1">
+    <h3><?php echo Language::languagePicker($_POST['id'])['YagaTitle']; ?></h3>
+    <p><?php echo Language::languagePicker($_POST['id'])['YagaText']; ?></p>
 </div>
-<div id="Father" class="tabcontent <?php if ($_GET['tabid'] == 2) { ?> active <?php } ?>value=" 2
-">
-<h3><?php echo Language::languagePicker($_GET['id'])['FatherTitle']; ?></h3>
-<p><?php echo Language::languagePicker($_GET['id'])['FatherText']; ?></p>
+<div id="Father" class="tabcontent <?php if ($_POST['tabid'] == 2) { ?> active <?php } ?>" value="2">
+<h3><?php echo Language::languagePicker($_POST['id'])['FatherTitle']; ?></h3>
+<p><?php echo Language::languagePicker($_POST['id'])['FatherText']; ?></p>
 </div>
 </body>
 </html>
