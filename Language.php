@@ -2,26 +2,50 @@
 
 class Language
 {
-    public static function languagePicker($langId)
+    const ENG = 'EngText.php';
+    const ENG_ID = 1;
+    const ENG_HOLDER = 'EN';
+
+    const BG = 'BgText.php';
+    const BG_ID = 2;
+    const BG_HOLDER = 'BG';
+
+    /**
+     * Gets language id and returns text in the selected language.
+     * @param $key
+     * @return mixed
+     */
+    public static function languagePicker($key)
     {
-        if ($langId == 1) {
-            require 'EngText.php';
+        /*Checks if language exist and if it does picks it.*/
+        if ($_POST['id'] == SELF::ENG_ID) {
+            $languageLibrary = SELF::ENG;
+        } elseif ($_POST['id'] == SELF::BG_ID) {
+            $languageLibrary = SELF::BG;
+        } else {
 
-            return $engText;
-        } elseif ($langId == 2) {
-            require 'BgText.php';
-
-            return $bgText;
+            return $key;
         }
+        /*If text array key doesn't exist returns the key.*/
+        if (!isset($languageLibrary)) {
+            return $key;
+        }
+
+        $lib = require $languageLibrary;
+        if (!isset($lib[$key])) {
+
+            return $key;
+        }
+
+        return $lib[$key];
     }
 }
 
-var_dump($_POST);
-
 if (!isset($_POST['id'])) {
-    $_POST['id'] = 1;
+    $_POST['id'] = Language::ENG_ID;
+}
+if (!isset($_POST['tabid'])) {
     $_POST['tabid'] = 1;
-
 }
 ?>
 
@@ -33,19 +57,16 @@ if (!isset($_POST['id'])) {
     <script>
 
         function pickLang(str) {
-            var childSelected = 1;
+            var childSelected;
             $("div[class=tab]").children('button').each(function () {
                 var myClasses = this.classList;
-                var child = 1;
-                child = this.value;
+                var child = this.value;
                 $.each(myClasses, function () {
                     if (this == 'active') {
                         childSelected = child;
                     }
                 });
-
             });
-
             var input = $("<input>")
                 .attr("type", "hidden")
                 .attr("name", "tabid").val(childSelected);
@@ -118,28 +139,30 @@ if (!isset($_POST['id'])) {
 <div>
     <form id="language-picker" action="Language.php" method="post">
         <select name="id" onchange="pickLang(this.value)">
-            <option value="1" <?php if ($_POST['id'] == 1) { ?> selected <?php } ?>>EN</option>
-            <option value="2" <?php if ($_POST['id'] == 2) { ?> selected <?php } ?>>BG</option>
+            <option value="<?php echo Language::ENG_ID; ?>" <?php if ($_POST['id'] == Language::ENG_ID) { ?> selected <?php } ?>><?php echo Language::ENG_HOLDER; ?> </option>
+            <option value="<?php echo Language::BG_ID; ?>" <?php if ($_POST['id'] == Language::BG_ID) { ?> selected <?php } ?>><?php echo Language::BG_HOLDER; ?></option>
         </select>
     </form>
 </div>
 <div class="tab">
-    <button class="tablinks <?php if ($_POST['tabid'] == '1') { ?> active <?php } ?>""
+    <button class="tablinks <?php if ($_POST['tabid'] == '1') { ?> active <?php } ?>"
             value="1"
-            onclick="getContent(event, 'Yaga');"><?php echo Language::languagePicker($_POST['id'])['YagaTitle']; ?></button>
-    <button class="tablinks <?php if ($_POST['tabid'] == '2') { ?> active <?php } ?>""
+            onclick="getContent(event, 'Yaga');"><?php echo Language::languagePicker("YagaTitle"); ?></button>
+
+
+    <button class="tablinks <?php if ($_POST['tabid'] == '2') { ?> active <?php } ?>"
             value="2"
-            onclick="getContent(event, 'Father');"><?php echo Language::languagePicker($_POST['id'])['FatherTitle']; ?></button>
+            onclick="getContent(event, 'Father');"><?php echo Language::languagePicker("FatherTitle"); ?></button>
 </div>
 
 
 <div id="Yaga" class="tabcontent <?php if ($_POST['tabid'] == '1') { ?> active <?php } ?>" value="1">
-    <h3><?php echo Language::languagePicker($_POST['id'])['YagaTitle']; ?></h3>
-    <p><?php echo Language::languagePicker($_POST['id'])['YagaText']; ?></p>
+    <h3><?php echo Language::languagePicker('YagaTitle'); ?></h3>
+    <p><?php echo Language::languagePicker('YagaText'); ?></p>
 </div>
 <div id="Father" class="tabcontent <?php if ($_POST['tabid'] == 2) { ?> active <?php } ?>" value="2">
-<h3><?php echo Language::languagePicker($_POST['id'])['FatherTitle']; ?></h3>
-<p><?php echo Language::languagePicker($_POST['id'])['FatherText']; ?></p>
+    <h3><?php echo Language::languagePicker('FatherTitle'); ?></h3>
+    <p><?php echo Language::languagePicker('FatherText'); ?></p>
 </div>
 </body>
 </html>

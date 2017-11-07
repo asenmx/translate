@@ -5,7 +5,7 @@
  * Date: 11/6/17
  * Time: 2:55 PM
  */
-$engText = ['YagaText' => 'There was an old man and his wife. The old woman died leaving a single daughter. The old man sought 
+return ['YagaText' => 'There was an old man and his wife. The old woman died leaving a single daughter. The old man sought 
 another wife, and married a widow, who had a daughter of her own. This widow was a Yagha Witch. The stepmother had a 
 violent dislike for her stepdaughter. She used to strike her hard and gave her nothing to eat. One day she sent her to 
 the waterhole to wash some old net. While the girl was washing it the swift current carried it away. She cried bitterly.
